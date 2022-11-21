@@ -2,20 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>springbootRocketmq</artifactId>
+
+	<groupId>com.lijx</groupId>
+	<artifactId>rocketmq</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springbootRocketmq</name>
-	<description>springbootRocketmq</description>
+	<name>rocketmq</name>
+	<description>rocketmq</description>
+
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -27,7 +33,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.rocketmq</groupId>
+			<artifactId>rocketmq-client</artifactId>
+			<version>4.3.0</version>
+		</dependency>
 	</dependencies>
+
+
 
 	<build>
 		<plugins>
@@ -37,5 +51,33 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- 避免执行命令的时候出现警告warnning,添加以下配置
+		[WARNING] The requested profile "release-all" could not be activated because it does not exist.
+	-->
+	<!--多环境参数配置-->
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profilesActive>dev</profilesActive>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<profilesActive>test</profilesActive>
+			</properties>
+		</profile>
+		<profile>
+			<id>release-all</id>
+			<properties>
+				<profilesActive>release-all</profilesActive>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

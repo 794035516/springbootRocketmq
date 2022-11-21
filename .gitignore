@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+
+rocketmq-all-4.3.0-bin-release/
+springbootRocketmq.iml
+
 ### STS ###
 .apt_generated
 .classpath
