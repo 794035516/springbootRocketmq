@@ -17,9 +17,11 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class Consumer implements CommandLineRunner {
+public class Consumer implements CommandLineRunner
+{
 
-    /**z0PMGBK
+    /**
+     * z0PMGBK
      * 消费者
      */
     @Value("${rocketmq.consumer.pushConsumer}")
@@ -35,12 +37,14 @@ public class Consumer implements CommandLineRunner {
     /**
      * 初始化RocketMq的监听信息，渠道信息
      */
-    public void messageListener(){
+    public void messageListener()
+    {
 
 
-        DefaultMQPushConsumer consumer=new DefaultMQPushConsumer("SpringBootRocketMqGroup");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("SpringBootRocketMqGroup");
         consumer.setNamesrvAddr(namesrvAddr);
-        try {
+        try
+        {
 
             // 订阅PushTopic下Tag为push的消息,都订阅消息
             consumer.subscribe("PushTopic", "push");
@@ -51,25 +55,29 @@ public class Consumer implements CommandLineRunner {
             consumer.setConsumeMessageBatchMaxSize(1);
 
             //在此监听中消费信息，并返回消费的状态信息
-            consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
+            consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) ->
+            {
 
                 // 会把不同的消息分别放置到不同的队列中
-                for(Message msg:msgs){
+                for (Message msg : msgs)
+                {
 
-                    System.out.println("接收到了消息："+new String(msg.getBody()));
+                    System.out.println("接收到了消息：" + new String(msg.getBody()));
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             });
 
             consumer.start();
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) throws Exception
+    {
         this.messageListener();
     }
 }

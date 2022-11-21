@@ -1,4 +1,4 @@
-###下载安装RocketMQ
+### 下载安装RocketMQ
 这里已经存在rocketmq-al-4.3.0的zip压缩包
 
 ```
@@ -12,7 +12,8 @@ rocket 修改broker和namesrv默认设置的堆内存大小
     修改runbroker.sh JAVA_OPT="${JAVA_OPT} -server -Xms1g -Xmx1g -Xmn512m"
     修改runserver.sh JAVA_OPT="${JAVA_OPT} -server -Xms1g -Xmx1g -Xmn512m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=320m"
 
-###启动NameServer，启动后NameServer的端口是9876，请确保自己的9876端口未被占用
+### 启动NameServer
+启动后NameServer的端口是9876，请确保自己的9876端口未被占用
 ```
 # nohup sh bin/mqnamesrv &
 # tail -f ~/logs/rocketmqlogs/namesrv.log
