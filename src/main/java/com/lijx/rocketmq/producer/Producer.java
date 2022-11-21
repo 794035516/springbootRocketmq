@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
@@ -57,17 +58,41 @@ public class Producer
         }
     }
 
-    public String send(String topic, String tags, String body)
+    //同步发送方式
+    public String syncSend(String topic, String tags, String body)
             throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException
     {
         Message message = new Message(topic, tags, body.getBytes(RemotingHelper.DEFAULT_CHARSET));
         StopWatch stop = new StopWatch();
         stop.start();
+        //同步方式
         SendResult result = producer.send(message);
-        System.out.println("发送响应：MsgId:" + result.getMsgId() + "，发送状态:" + result.getSendStatus());
+        System.out.println("同步发送响应: MsgId:" + result.getMsgId() + "，发送状态:" + result.getSendStatus());
         stop.stop();
-        return "{\"MsgId\":\"" + result.getMsgId() + "\"}";
+        return "{\"同步MsgId\":\"" + result.getMsgId() + "\"}";
     }
+
+    //异步发送方式
+    public String asyncSend(String topic, String tags, String body)
+            throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException
+    {
+        Message message = new Message(topic, tags, body.getBytes(RemotingHelper.DEFAULT_CHARSET));
+        //异步方式
+        System.out.println("异步发送一次消息-----");
+        producer.send(message, new SendCallback(){
+            public void onSuccess(SendResult sendResult){
+                System.out.println("异步发送结果: " + sendResult + ", msgid: " + sendResult.getMsgId() +", status: " + sendResult.getSendStatus() );
+            }
+
+            public void onException(Throwable e){
+                System.out.println("异步发送异常: ");
+                e.printStackTrace();
+            }
+        });
+
+        return "异步返回";
+    }
+
 
 }
 

@@ -6,7 +6,10 @@ import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,12 +25,17 @@ public class TestController
     @Autowired
     private Producer producer;
 
-    @RequestMapping(value = "/push", method = RequestMethod.GET)
-    public String pushMsg(String msg)
+    @Value("${rocketmq.producer.topic}")
+    private String msgTopic;
+
+    @Value("${rocketmq.producer.tag}")
+    private String msgTag;
+    @RequestMapping(value = "/syncPush", method = RequestMethod.GET)
+    public String syncPushMsg(String msg)
     {
         try
         {
-            return producer.send("PushTopic", "push", msg);
+            return producer.syncSend( msgTopic, msgTag, msg);
         } catch (InterruptedException e)
         {
             e.printStackTrace();
@@ -44,7 +52,32 @@ public class TestController
         {
             e.printStackTrace();
         }
-        return "ERROR";
+        return "SYNC_ERROR";
+    }
+
+    @RequestMapping(value = "/asyncPush", method = RequestMethod.GET)
+    public String asyncPushMsg(String msg)
+    {
+        try
+        {
+            return producer.asyncSend( msgTopic, msgTag, msg);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch (RemotingException e)
+        {
+            e.printStackTrace();
+        } catch (MQClientException e)
+        {
+            e.printStackTrace();
+        } catch (MQBrokerException e)
+        {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        return "ASYNC_ERROR";
     }
 }
 
